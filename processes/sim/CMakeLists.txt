@@ -5,8 +5,27 @@ project(Ermentrout2009)
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  (This can be changed with `cmake -DCMAKE_INSTALL_PREFIX=/some/place`")
 
-set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
-set(CMAKE_C_FLAGS "-Wall")
+# From CMAKE_SYSTEM work out which of __OSX__, __GLN__, __NIX__ or
+# __WIN__ are required
+message(STATUS "Operating system: " ${CMAKE_SYSTEM})
+if(CMAKE_SYSTEM MATCHES Linux.*)
+  set(MORPH_HOST_DEFINITION "-D__GLN__")
+elseif(CMAKE_SYSTEM MATCHES BSD.*)
+  set(MORPH_HOST_DEFINITION "-D__NIX__")
+elseif(APPLE)
+  set(MORPH_HOST_DEFINITION "-D__OSX__")
+elseif(CMAKE_SYSTEM MATCHES Win.*)
+  set(MORPH_HOST_DEFINITION "-D__WIN__")
+else()
+  message(ERROR "Operating system not supported: " ${CMAKE_SYSTEM})
+endif()
+
+# Add the host definition to CFLAGS
+set(CMAKE_CXX_FLAGS "${MORPH_HOST_DEFINITION}")
+set(CMAKE_C_FLAGS "${MORPH_HOST_DEFINITION}")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c++11")
+
 
 # Lib finding - we have to do this, so that the correct include paths
 # are present for OpenGL, OpenCV, etc; they're all included by
@@ -15,7 +34,9 @@ find_package(OpenCV REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(X11 REQUIRED)
-include_directories(${OPENCV_INCLUDE_DIR} ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
+include_directories(${OPENCV_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${X11_INC_SEARCH_PATH})
+
+#link_directories(/usr/X11R6/lib)
 
 # Find libmorphologica using pkgconfig
 find_package(PkgConfig)
