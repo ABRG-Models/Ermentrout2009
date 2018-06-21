@@ -20,12 +20,8 @@ else()
   message(ERROR "Operating system not supported: " ${CMAKE_SYSTEM})
 endif()
 
-# Add the host definition to CFLAGS
-set(CMAKE_CXX_FLAGS "${MORPH_HOST_DEFINITION}")
-set(CMAKE_C_FLAGS "${MORPH_HOST_DEFINITION}")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c++11")
-
+# Add the host definition to CXXFLAGS along with other switches
+set(CMAKE_CXX_FLAGS "${MORPH_HOST_DEFINITION} -Wall -std=c++11")
 
 # Lib finding - we have to do this, so that the correct include paths
 # are present for OpenGL, OpenCV, etc; they're all included by
@@ -35,8 +31,6 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(X11 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${X11_INC_SEARCH_PATH})
-
-#link_directories(/usr/X11R6/lib)
 
 # Find libmorphologica using pkgconfig
 find_package(PkgConfig)
@@ -51,7 +45,6 @@ else()
   message(WARNING "There's no pkg-config on this system to check for libmorphologica. "
     "You can set MORPH_LIB with `cmake -DMORPH_LIB=/pathto/lib` ...")
 endif()
-
 
 # The main process executable
 add_executable(process process.cpp)

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class morph
+class Erm2009
 {
 public:
     int scale;
@@ -22,9 +22,8 @@ public:
     vector<vector<double> > N; // hex neighbourhood
     vector<int> C;
 
-
     vector<double> NN, CC;
-    morph (int scale, int offset, double z) {
+    Erm2009 (int scale, int offset, double z) {
 
         this->scale = scale;
         this->offset = offset;
@@ -33,11 +32,11 @@ public:
         int S = pow(2.0, scale-1) - offset;
         double s = S - offset;
         n = 0;
-        for (int d=0; d<=S; d++){
-            for (int r=-S; r<=S; r++){
-                for (int g=-S; g<=S; g++){
-                    for (int b=-S;b<=S;b++){
-                        if (abs(r)+abs(g)+abs(b)==d*2 && (r+g+b==0)){
+        for (int d=0; d<=S; d++) {
+            for (int r=-S; r<=S; r++) {
+                for (int g=-S; g<=S; g++) {
+                    for (int b=-S;b<=S;b++) {
+                        if (abs(r)+abs(g)+abs(b)==d*2 && (r+g+b==0)) {
                             double x = (g/2.+r)/s;
                             double y = g*(sqrt(3.)/2.)/s;
                             if (x*x+y*y <= 0.75) { // circular
@@ -205,33 +204,33 @@ public:
             }
         }
     }
-};
+}; // Erm2009
 
 
-int main(int argc, char **argv)
+int main (int argc, char **argv)
 {
     srand(atoi(argv[3]));
 
     double dt = .0001;            // integration timestep // SHOULD BE 0.001
 
     // INITIALIZATION
-    world W(argv[1],argv[2],atoi(argv[3]),atoi(argv[4]),dt);
+    morph::World W(argv[1],argv[2],atoi(argv[3]),atoi(argv[4]),dt);
     //W.waitForConnection();
 
     // DISPLAYS
-    vector<Gdisplay> displays;
+    vector<morph::Gdisplay> displays;
     vector<double>fix(3,0.);
     vector<double>eye(3,0.);
     eye[2] = -0.4;
     vector<double>rot(3,0.);
-    displays.push_back(Gdisplay(600,"morphologica",0.,0.,0.));
+    displays.push_back (morph::Gdisplay (600, "morphologica", 0., 0., 0.));
     displays[0].resetDisplay(fix,eye,rot);
     displays[0].redrawDisplay();
 
-    morph M(7,0,0.);
+    Erm2009 M(7,0,0.);
     for (int i=0;i<M.n;i++) {
-        M.NN[i]=(tools::randFloat())*0.1;
-        M.CC[i]=(tools::randFloat())*0.1;
+        M.NN[i]=(morph::Tools::randFloat())*0.1;
+        M.CC[i]=(morph::Tools::randFloat())*0.1;
     }
 
     unsigned int frameN = 0;
@@ -285,16 +284,16 @@ int main(int argc, char **argv)
         {
             W.logfile<<W.processName<<"@"<<TIMEcs<<": 0=QUIT"<<endl<<flush;
 
-                W.logfile.close();
-                for(unsigned int i=0;i<displays.size();i++){
-                    displays[i].closeDisplay();
-                }
-                W.master.closeSocket();
-                for(unsigned int i=0;i<W.ports.size();i++){
-                    W.ports[i].closeSocket();
-                }
-                doing=false;
-                break;
+            W.logfile.close();
+            for(unsigned int i=0;i<displays.size();i++){
+                displays[i].closeDisplay();
+            }
+            W.master.closeSocket();
+            for(unsigned int i=0;i<W.ports.size();i++){
+                W.ports[i].closeSocket();
+            }
+            doing=false;
+            break;
         }
 
         case 1: // *** STEP ***
@@ -343,7 +342,7 @@ int main(int argc, char **argv)
             }
 
             for (int i=0;i<M.n;i++) {
-                vector <double> cl = tools::getJetColor(P[i]);
+                vector <double> cl = morph::Tools::getJetColor(P[i]);
                 displays[0].drawTriFill(M.X[i],M.X[M.N[i][0]],M.X[M.N[i][1]],cl);
                 displays[0].drawTriFill(M.X[i],M.X[M.N[i][3]],M.X[M.N[i][4]],cl);
             }
