@@ -15,7 +15,7 @@ launch (using code in processes.py) 1 or more instances of a compiled
 C++ program called processes. Before this will work, you need to
 compile processes:
 
-```
+```sh
 cd processes/sim
 mkdir build
 cd build
@@ -26,7 +26,7 @@ cd ../../../
 
 Now you can run the model:
 
-```
+```sh
 python sim.py
 ```
 
