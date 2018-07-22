@@ -229,8 +229,8 @@ int main (int argc, char **argv)
 
     Erm2009 M(7,0,0.);
     for (int i=0;i<M.n;i++) {
-        M.NN[i]=(morph::Tools::randFloat())*0.1;
-        M.CC[i]=(morph::Tools::randFloat())*0.1;
+        M.NN[i]=(morph::Tools::randDouble())*0.1;
+        M.CC[i]=(morph::Tools::randDouble())*0.1;
     }
 
     unsigned int frameN = 0;
